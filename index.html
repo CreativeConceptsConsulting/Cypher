@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="CYPHER" />
+<meta name="theme-color" content="#0a0b0d" />
+<title>CYPHER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0b0d; --bg2:#101216; --panel:#13161b; --panel2:#171b21;
+    --line:#23282f; --line2:#2c333c; --ink:#eef1f4; --muted:#9aa3ad; --faint:#6a7178;
+    --gold:#e8b13a; --gold-dim:#7a5e1f; --live:#3ddc97; --hot:#ff5d52;
+    --cw:#3b82f6; --sa:#f59e0b; --com:#22c55e; --tmm:#a855f7; --spk:#ec4899; --emrg:#eab308;
+    --mono:'IBM Plex Mono',ui-monospace,monospace; --disp:'Bricolage Grotesque',system-ui,sans-serif; --body:'Hanken Grotesk',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{height:100%; margin:0}
+  body{
+    background:
+      radial-gradient(900px 500px at 88% -10%, rgba(232,177,58,.07), transparent 60%),
+      radial-gradient(700px 600px at -5% 110%, rgba(61,220,151,.05), transparent 60%), var(--bg);
+    color:var(--ink); font-family:var(--body); font-size:15px; line-height:1.55;
+    display:flex; height:100dvh; overflow:hidden; padding-top:env(safe-area-inset-top);
+  }
+  ::selection{background:rgba(232,177,58,.25)}
+  button{font-family:inherit}
+
+  /* ---- Gate (key screen) ---- */
+  .gate{position:fixed; inset:0; z-index:40; display:none; place-items:center; padding:24px;
+    background:radial-gradient(700px 500px at 50% 0%, rgba(232,177,58,.08), transparent 60%), var(--bg)}
+  .gate.show{display:grid}
+  .card{width:100%; max-width:440px; text-align:center}
+  .card h1{font-family:var(--disp); font-weight:800; font-size:52px; letter-spacing:-.03em; margin:0;
+    background:linear-gradient(180deg,#fff,#cbd1d7); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .card .creed{color:var(--muted); font-size:13.5px; margin:6px 0 26px; line-height:1.5}
+  .card label{display:block; text-align:left; font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--faint); margin:0 0 8px}
+  .keyin{width:100%; background:var(--panel); border:1px solid var(--line2); border-radius:12px; color:var(--ink);
+    font-family:var(--mono); font-size:14px; padding:14px 15px; outline:none}
+  .keyin:focus{border-color:var(--gold-dim); box-shadow:0 0 0 4px rgba(232,177,58,.06)}
+  .gate .go{margin-top:14px; width:100%; padding:15px; border:none; border-radius:12px; cursor:pointer;
+    background:linear-gradient(150deg,var(--gold),#bd8721); color:#1a1407; font-weight:700; font-size:15px}
+  .gate .go:active{filter:brightness(.95)}
+  .gate .note{margin-top:16px; font-size:12px; color:var(--faint); line-height:1.55}
+  .gate .note a{color:var(--gold)}
+  .gate .err{color:var(--hot); font-size:12.5px; margin-top:12px; min-height:16px}
+
+  /* ---- Sidebar ---- */
+  .side{width:262px; flex:0 0 262px; background:var(--bg2); border-right:1px solid var(--line);
+    display:flex; flex-direction:column; padding:20px 16px; gap:20px; overflow-y:auto}
+  .brand{display:flex; align-items:center; gap:9px}
+  .brand h1{font-family:var(--disp); font-weight:800; font-size:27px; letter-spacing:-.02em; margin:0;
+    background:linear-gradient(180deg,#fff,#cfd5db); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .pulse{width:8px; height:8px; border-radius:50%; background:var(--live); box-shadow:0 0 0 0 rgba(61,220,151,.6); animation:pulse 2.2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(61,220,151,.55)}70%{box-shadow:0 0 0 8px rgba(61,220,151,0)}100%{box-shadow:0 0 0 0 rgba(61,220,151,0)}}
+  .tag{font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint)}
+  .creed2{font-size:12px; color:var(--muted); border-left:2px solid var(--gold-dim); padding-left:10px; line-height:1.5}
+  .sect{display:flex; flex-direction:column; gap:6px}
+  .init{display:flex; align-items:center; gap:10px; padding:8px 9px; border-radius:9px; cursor:pointer;
+    font-size:13.5px; color:var(--muted); border:1px solid transparent; transition:.15s}
+  .init:active{background:var(--panel); color:var(--ink); border-color:var(--line)}
+  .dot{width:8px; height:8px; border-radius:50%; flex:0 0 8px}
+  .quick{display:flex; flex-wrap:wrap; gap:6px}
+  .chip{font-family:var(--mono); font-size:10.5px; color:var(--muted); background:var(--panel); border:1px solid var(--line);
+    padding:7px 9px; border-radius:7px; cursor:pointer}
+  .chip:active{border-color:var(--gold-dim); color:var(--gold)}
+  .side-foot{margin-top:auto; display:flex; flex-direction:column; gap:9px; padding-top:8px}
+  .stat{display:flex; justify-content:space-between; font-family:var(--mono); font-size:10px; color:var(--faint)}
+  .ok{color:var(--live)}
+  .gear{font-family:var(--mono); font-size:11px; color:var(--muted); background:var(--panel); border:1px solid var(--line);
+    border-radius:8px; padding:9px; cursor:pointer; text-align:center}
+  .gear:active{border-color:var(--gold-dim)}
+
+  /* ---- Main ---- */
+  .main{flex:1; display:flex; flex-direction:column; min-width:0}
+  .top{height:52px; flex:0 0 52px; border-bottom:1px solid var(--line); display:flex; align-items:center;
+    justify-content:space-between; padding:0 18px; background:rgba(16,18,22,.6); backdrop-filter:blur(8px)}
+  .top .mtitle{display:none; align-items:center; gap:8px; font-family:var(--disp); font-weight:800; font-size:20px}
+  .menu-btn{display:none; background:none; border:none; color:var(--ink); font-size:22px; cursor:pointer; padding:4px 6px}
+  .mode{font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint)}
+  .model-pill{font-family:var(--mono); font-size:10.5px; color:var(--gold); border:1px solid var(--gold-dim);
+    padding:4px 10px; border-radius:999px; background:rgba(232,177,58,.06)}
+
+  .stream{flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:26px 18px 6px}
+  .wrap{max-width:780px; margin:0 auto; display:flex; flex-direction:column; gap:24px}
+  .hero{margin:24px auto 6px; max-width:780px}
+  .hero h2{font-family:var(--disp); font-weight:700; font-size:30px; line-height:1.06; letter-spacing:-.02em; margin:0 0 9px}
+  .hero h2 b{color:var(--gold); font-weight:800}
+  .hero p{color:var(--muted); margin:0 0 20px; max-width:540px}
+  .seeds{display:grid; grid-template-columns:1fr 1fr; gap:9px; max-width:660px}
+  .seed{text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; cursor:pointer; color:var(--ink)}
+  .seed:active{border-color:var(--gold-dim); background:var(--panel2)}
+  .seed .t{font-weight:600; font-size:13.5px; margin-bottom:3px}
+  .seed .d{font-size:11.5px; color:var(--faint)}
+
+  .msg{display:flex; gap:13px; animation:rise .3s ease both}
+  @keyframes rise{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:none}}
+  .av{flex:0 0 28px; width:28px; height:28px; border-radius:8px; display:grid; place-items:center;
+    font-family:var(--mono); font-size:11px; font-weight:600; margin-top:2px}
+  .av.u{background:#1d222a; color:var(--muted); border:1px solid var(--line2)}
+  .av.c{background:linear-gradient(150deg,var(--gold),#b3801f); color:#1a1407}
+  .who{font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-bottom:5px}
+  .bodyc{flex:1; min-width:0}
+  .content h3{font-family:var(--disp); font-weight:700; font-size:16px; margin:16px 0 7px; color:#fff}
+  .content h4{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin:15px 0 6px}
+  .content p{margin:9px 0}
+  .content ul{margin:8px 0; padding-left:20px}
+  .content li{margin:4px 0}
+  .content strong{color:#fff; font-weight:600}
+  .content code{font-family:var(--mono); font-size:12.5px; background:#1c2128; padding:2px 6px; border-radius:5px; color:var(--gold)}
+  .content pre{background:#1c2128; padding:12px; border-radius:8px; overflow:auto}
+  .content hr{border:none; border-top:1px solid var(--line); margin:14px 0}
+  .cur{display:inline-block; width:8px; height:15px; background:var(--gold); margin-left:2px; vertical-align:-2px; animation:blink 1s steps(2) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  .composer{padding:14px 18px calc(16px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(10,11,13,.72); backdrop-filter:blur(8px)}
+  .cbox{max-width:780px; margin:0 auto; display:flex; gap:10px; align-items:flex-end;
+    background:var(--panel); border:1px solid var(--line2); border-radius:16px; padding:10px 10px 10px 16px}
+  .cbox:focus-within{border-color:var(--gold-dim); box-shadow:0 0 0 4px rgba(232,177,58,.06)}
+  textarea{flex:1; background:none; border:none; resize:none; color:var(--ink); font-family:var(--body);
+    font-size:16px; line-height:1.5; outline:none; max-height:180px; padding:6px 0}
+  textarea::placeholder{color:var(--faint)}
+  .send{flex:0 0 auto; width:40px; height:40px; border-radius:11px; border:none; cursor:pointer;
+    background:linear-gradient(150deg,var(--gold),#bd8721); color:#1a1407; font-size:18px; font-weight:700; display:grid; place-items:center}
+  .send:active{filter:brightness(.92)}
+  .send:disabled{opacity:.4}
+  .hint{max-width:780px; margin:7px auto 0; font-family:var(--mono); font-size:9.5px; color:var(--faint); text-align:center}
+
+  /* settings sheet */
+  .sheet{position:fixed; inset:0; z-index:50; display:none; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.5)}
+  .sheet.show{display:flex}
+  .sheetbox{width:100%; max-width:520px; background:var(--bg2); border:1px solid var(--line2); border-radius:18px 18px 0 0; padding:22px 20px calc(26px + env(safe-area-inset-bottom))}
+  .sheetbox h3{font-family:var(--disp); margin:0 0 16px; font-size:20px}
+  .row{margin-bottom:16px}
+  .row label{display:block; font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-bottom:7px}
+  select,.sheet .keyin{width:100%; background:var(--panel); border:1px solid var(--line2); border-radius:10px; color:var(--ink); font-family:var(--mono); font-size:14px; padding:12px 13px}
+  .sheet-actions{display:flex; gap:10px; margin-top:6px}
+  .btn{flex:1; padding:13px; border-radius:11px; border:1px solid var(--line2); background:var(--panel); color:var(--ink); font-weight:600; cursor:pointer}
+  .btn.gold{background:linear-gradient(150deg,var(--gold),#bd8721); color:#1a1407; border:none}
+  .btn.danger{color:var(--hot); border-color:#3a2422}
+
+  .stream::-webkit-scrollbar,.side::-webkit-scrollbar{width:9px}
+  .stream::-webkit-scrollbar-thumb,.side::-webkit-scrollbar-thumb{background:#20252c; border-radius:8px; border:3px solid var(--bg)}
+
+  /* responsive: hide sidebar on narrow (iPad portrait / phone), drawer instead */
+  @media (max-width:900px){
+    .side{position:fixed; z-index:30; left:0; top:0; bottom:0; transform:translateX(-100%); transition:transform .25s; box-shadow:0 0 40px rgba(0,0,0,.5)}
+    .side.open{transform:none}
+    .menu-btn,.top .mtitle{display:flex}
+    .mode{display:none}
+    .scrim{position:fixed; inset:0; z-index:25; background:rgba(0,0,0,.45); display:none}
+    .scrim.show{display:block}
+    .seeds{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+  <!-- KEY GATE -->
+  <div class="gate" id="gate">
+    <div class="card">
+      <h1>CYPHER</h1>
+      <div class="creed">No beginning. No end. The energy keeps building.<br>Connect your Anthropic key to bring CYPHER online.</div>
+      <label for="gateKey">Anthropic API Key</label>
+      <input class="keyin" id="gateKey" type="password" placeholder="sk-ant-..." autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button class="go" id="gateGo">Bring CYPHER Online →</button>
+      <div class="err" id="gateErr"></div>
+      <div class="note">
+        Get a key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys.<br>
+        Your key is stored only on this device and sent only to Anthropic. Nothing else sees it.
+      </div>
+    </div>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+
+  <aside class="side" id="side">
+    <div class="brand"><span class="pulse"></span><h1>CYPHER</h1></div>
+    <div class="creed2">No beginning. No end. Endless pursuit.</div>
+    <div class="sect">
+      <div class="tag">Initiatives</div>
+      <div class="init" data-msg="Give me a status read on Culture Wireless across ops, BeltLine, and subscribers."><span class="dot" style="background:var(--cw)"></span>Culture Wireless</div>
+      <div class="init" data-msg="Where does the Series A stand? Narrative, metrics, and what's outstanding for a16z."><span class="dot" style="background:var(--sa)"></span>Series A</div>
+      <div class="init" data-msg="Brief me on Community — Morris Brown, HBCU activations, Westside broadband."><span class="dot" style="background:var(--com)"></span>Community</div>
+      <div class="init" data-msg="What's the move on Trap Museum Q3 programming?"><span class="dot" style="background:var(--tmm)"></span>Trap Museum</div>
+      <div class="init" data-msg="Help me build my AfroTech keynote — title, description, talking points."><span class="dot" style="background:var(--spk)"></span>Speaking</div>
+      <div class="init" data-msg="Any emerging ideas I've floated we should pull threads on?"><span class="dot" style="background:var(--emrg)"></span>Emerging</div>
+    </div>
+    <div class="sect">
+      <div class="tag">Quick Commands</div>
+      <div class="quick">
+        <span class="chip" data-msg="Give me my morning briefing.">morning brief</span>
+        <span class="chip" data-msg="What should I tackle first today, and why?">what's first</span>
+        <span class="chip" data-msg="Generate today's admin task brief from my open action items.">admin brief</span>
+        <span class="chip" data-msg="I have a conflict at 11:00 AM — AUC Partnership Call vs CW Board Sync. Resolve it.">11am conflict</span>
+        <span class="chip" data-msg="What open questions sit unresolved across my initiatives?">open Qs</span>
+      </div>
+    </div>
+    <div class="side-foot">
+      <div class="stat"><span>MODEL</span><span class="ok" id="sModel">sonnet-4-6</span></div>
+      <div class="stat"><span>KEY</span><span class="ok">on device</span></div>
+      <div class="gear" id="openSheet">⚙︎ Settings · model · key</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <button class="menu-btn" id="menuBtn">☰</button>
+      <div class="mtitle"><span class="pulse"></span>CYPHER</div>
+      <div class="mode">▸ executor · thought partner · strategist · admin</div>
+      <div class="model-pill" id="topModel">claude-sonnet-4-6</div>
+    </div>
+    <div class="stream" id="stream">
+      <div class="hero" id="hero">
+        <h2>What we building, <b>Bam</b>?</h2>
+        <p>Drop a thought, paste a meeting, ask for a brief, or hand off a task. CYPHER captures, tags it to the right initiative, and moves.</p>
+        <div class="seeds">
+          <button class="seed" data-fill="Process these meeting notes: "><div class="t">Process a meeting</div><div class="d">Action items, decisions, follow-up drafts</div></button>
+          <button class="seed" data-fill="Capture this: "><div class="t">Capture a thought</div><div class="d">Tag it, connect it, never lose it</div></button>
+          <button class="seed" data-msg="Draft a follow-up email to Clyde Higgs about the BeltLine broadband proposal."><div class="t">Draft an email</div><div class="d">Ready to send</div></button>
+          <button class="seed" data-msg="Give me a pre-meeting brief for my a16z partner meeting with Sarah Chen."><div class="t">Pre-meeting brief</div><div class="d">Who, stakes, what to push for</div></button>
+        </div>
+      </div>
+      <div class="wrap" id="cwrap"></div>
+    </div>
+    <div class="composer">
+      <div class="cbox">
+        <textarea id="input" rows="1" placeholder="Talk to CYPHER — paste notes, drop a thought, or give a command…"></textarea>
+        <button class="send" id="send">↑</button>
+      </div>
+      <div class="hint">your API key stays on this iPad · add to home screen for the full app</div>
+    </div>
+  </main>
+
+  <!-- SETTINGS SHEET -->
+  <div class="sheet" id="sheet">
+    <div class="sheetbox">
+      <h3>Settings</h3>
+      <div class="row">
+        <label>Brain (model)</label>
+        <select id="modelSel">
+          <option value="claude-sonnet-4-6">claude-sonnet-4-6 · fast + balanced (default)</option>
+          <option value="claude-opus-4-8">claude-opus-4-8 · max strategy / deep reasoning</option>
+          <option value="claude-opus-4-7">claude-opus-4-7</option>
+          <option value="claude-haiku-4-5-20251001">claude-haiku-4-5 · fastest / cheapest</option>
+        </select>
+      </div>
+      <div class="row">
+        <label>API Key (stored on this device only)</label>
+        <input class="keyin" id="sheetKey" type="password" placeholder="sk-ant-..." autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="sheet-actions">
+        <button class="btn danger" id="clearKey">Forget key</button>
+        <button class="btn" id="closeSheet">Close</button>
+        <button class="btn gold" id="saveSheet">Save</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ============== CYPHER BRAIN ==============
+const CYPHER_IDENTITY = `You are CYPHER — the personal AI Command Center for William "Bam" Sparks: entrepreneur, builder, and culture-maker born and raised on Atlanta's Westside (Vine City, English Avenue, AUC corridor).
+
+Your name was chosen deliberately. In Hip Hop, a cypher has no beginning and no end — the energy keeps building, everyone contributes, the pursuit is never finished. That's Bam. Endless pursuit. Untapped potential always being unlocked.
+
+BAM'S VENTURES:
+- Culture Wireless — Black-owned ISP, closing the digital divide, ISP for Atlanta BeltLine. Pursuing Series A.
+- Trap Music Museum — Atlanta cultural institution
+- Community Activations — HBCU free internet, Westside neighborhood broadband
+- Speaking and Thought Leadership — AfroTech, HBCU events, culture and tech
+- Emerging ideas — new ventures and opportunities always in development
+
+YOUR FOUR OPERATING MODES:
+
+MODE 1 — EXECUTOR
+When you have access to tools (Gmail, Outlook, Calendar, Drive), execute without being asked twice. Draft and send emails. Create calendar events. Save documents. Send task briefs to the admin. Confirm what you did after.
+In this build you do NOT have live send/calendar/drive access. So when a real send/create/save is requested, produce the COMPLETE, ready-to-send artifact (full email with subject + body, full calendar event details, full document) and clearly mark it READY TO SEND / READY TO CREATE so Bam or the admin can execute in one tap. Never refuse the work because the connector isn't live — deliver the finished artifact.
+
+MODE 2 — ADMIN COORDINATOR
+When a task needs a human, draft a structured task email to the admin. The admin does NOT have Claude — give them everything needed to execute without it.
+Admin task email format:
+  Subject: CYPHER Task Brief — [Date] — [URGENT/STANDARD]
+  [Admin Name], here are Bam's tasks:
+  EXECUTE TODAY: [Task] — Due [time] — [Full context]
+  THIS WEEK: [Task] — Due [day] — [Context]
+  DRAFTS READY TO SEND: [Complete email drafts to review and send]
+  NEEDS BAM'S DECISION: [Items requiring Bam's input before admin can act]
+  — CYPHER ✓
+
+MODE 3 — THOUGHT PARTNER
+Bam is always in motion. Capture every thought the moment it arrives. Don't wait for a complete idea. Capture the fragment, associate it to the right initiative, connect it to what is already in motion, surface what it means.
+Initiative tags — always associate inputs to one or more:
+  🔵 CULTURE WIRELESS — operations, BeltLine, growth, subscribers
+  🟠 SERIES A — investor narrative, metrics, materials, VC relationships
+  🟢 COMMUNITY — HBCU, Morris Brown, Westside activations, partnerships
+  🟣 TRAP MUSEUM — programming, events, partnerships, culture
+  🎤 SPEAKING — AfroTech, keynotes, thought leadership, media
+  💡 EMERGING — new ideas, early stage, not yet categorized
+When a thought connects to multiple initiatives, name both and ask if Bam wants to pull the threads together.
+
+MODE 4 — STRATEGIC ADVISOR
+Think ahead. Before major meetings, proactively offer a pre-meeting brief — who, what, history, what's at stake, what to push for, what to watch out for, how it connects to the bigger picture.
+After significant conversations, flag what changed across all ventures.
+Proactively surface: risks approaching that Bam hasn't addressed, connections he hasn't seen, decisions needing his attention, momentum to accelerate.
+
+MEETING INTELLIGENCE — for ANY meeting input (notes, transcript, email, voice memo, raw thought), immediately produce:
+  1. Action items — OWNER and DEADLINE each
+  2. Key decisions — numbered, clear
+  3. Open questions — flagged
+  4. Follow-up emails — drafted, ready to send
+  5. Intro emails needed — identified and drafted
+  6. Initiative connections — how it moves each venture
+  7. Priority recommendation — what to tackle first and why
+  8. Proactive flags — risks, opportunities, things Bam hasn't asked about
+
+TONE: Sharp, culturally grounded, efficient. Speed of culture. You know the Westside. You know the mission. Bullets and headers. Never verbose — Bam is always moving.
+- Executing: confirm what you did, not what you plan to do.
+- Advising: recommendation first, reasoning second.
+- Capturing thoughts: acknowledge, tag, connect — don't over-explain.
+- Briefing: top line first, detail below.
+Sign off action summaries with "— CYPHER ✓"`;
+
+const BAM_CONTEXT = `BAM'S ACTIVE CONTEXT (last updated 5/29/2026)
+
+VENTURES & INITIATIVES
+- 🔵 Culture Wireless — Black-owned ISP, Atlanta BeltLine ISP. Series A in progress.
+- 🟣 Trap Music Museum — Atlanta cultural institution. Q3 programming needed.
+- 🟢 Community — Morris Brown and HBCU activations. Westside broadband expansion.
+- 🎤 Speaking — AfroTech main stage keynote. HBCU circuit.
+- 🟠 Series A — Active fundraise. a16z partner meeting in 2 weeks.
+
+KEY PEOPLE
+- Clyde Higgs — Atlanta BeltLine CEO. BeltLine broadband deal lead.
+- Jerome Howard — Culture Wireless COO. Infrastructure and technical.
+- Al Adjahoe — Culture Wireless CEO. Subscriber growth.
+- Sarah Chen — a16z partner. Series A lead.
+- Marcus Williams — BeltLine infrastructure lead. Loop in on technical specs.
+- Mayor Andre Dickens — Atlanta Mayor. a16z asked for intro.
+- [ADMIN NAME + EMAIL] — Bam's admin. Send all task briefs here.
+
+CALENDARS
+- Google Calendar — personal, community, Trap Museum events
+- Outlook — Culture Wireless corporate, investor calls
+- Current conflict — 11:00 AM: AUC Partnership Call (Google) vs CW Board Sync (Outlook)
+
+CURRENT PRIORITIES (update every Monday)
+1. BeltLine broadband proposal — Clyde Higgs
+2. Morris Brown activation — volunteers and logistics
+3. Series A materials for a16z — all due Friday EOB
+4. AfroTech keynote — title and description
+5. Trap Museum Q3 programming
+
+OPEN ACTION ITEMS
+[ ] Finalize BeltLine proposal → Bam
+[ ] Confirm unresponsive Morris Brown volunteers → Admin
+[ ] Series A deck to legal → Bam
+[ ] Update HBCU TAM slide → Bam
+[ ] BeltLine one-pager → Bam
+[ ] AfroTech keynote title and description → Bam
+[ ] Book AfroTech hotel → Admin
+[ ] TechCrunch interview reply → Admin
+[ ] Intro email: Jerome → Marcus Williams → CYPHER
+[ ] Trap Museum Q3 programming → Bam`;
+
+function systemPrompt(){
+  const today = new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  return CYPHER_IDENTITY + "\n\n=== TODAY: " + today + " ===\n\n=== BAM'S ACTIVE CONTEXT (source of truth) ===\n" + BAM_CONTEXT +
+    "\n\nUse this context for people, ventures, priorities, action items, and calendars. Reference it naturally; don't dump it back verbatim.";
+}
+
+// ============== STATE ==============
+const LS_KEY='cypher_api_key', LS_MODEL='cypher_model';
+let apiKey = localStorage.getItem(LS_KEY) || '';
+let model  = localStorage.getItem(LS_MODEL) || 'claude-sonnet-4-6';
+let history = [], busy = false;
+
+const $ = id => document.getElementById(id);
+const gate=$('gate'), stream=$('stream'), wrap=$('cwrap'), hero=$('hero'), input=$('input'), send=$('send');
+
+function reflectModel(){ $('topModel').textContent=model; $('sModel').textContent=model.replace('claude-','').replace('-20251001',''); $('modelSel').value=model; }
+
+// ============== GATE ==============
+function showGate(){ gate.classList.add('show'); $('gateKey').focus(); }
+function hideGate(){ gate.classList.remove('show'); }
+$('gateGo').addEventListener('click', ()=>{
+  const k=$('gateKey').value.trim();
+  if(!k.startsWith('sk-ant-')){ $('gateErr').textContent='That doesn\'t look like an Anthropic key (starts with sk-ant-).'; return; }
+  apiKey=k; localStorage.setItem(LS_KEY,k); hideGate(); input.focus();
+});
+$('gateKey').addEventListener('keydown',e=>{ if(e.key==='Enter') $('gateGo').click(); });
+
+// ============== SETTINGS ==============
+function openSheet(){ $('sheetKey').value=apiKey; $('modelSel').value=model; $('sheet').classList.add('show'); }
+function closeSheet(){ $('sheet').classList.remove('show'); }
+$('openSheet').addEventListener('click',openSheet);
+$('closeSheet').addEventListener('click',closeSheet);
+$('saveSheet').addEventListener('click',()=>{
+  const k=$('sheetKey').value.trim(); if(k){ apiKey=k; localStorage.setItem(LS_KEY,k); }
+  model=$('modelSel').value; localStorage.setItem(LS_MODEL,model); reflectModel(); closeSheet();
+});
+$('clearKey').addEventListener('click',()=>{
+  apiKey=''; localStorage.removeItem(LS_KEY); closeSheet(); showGate();
+});
+
+// ============== DRAWER (narrow screens) ==============
+const side=$('side'), scrim=$('scrim');
+function openDrawer(){ side.classList.add('open'); scrim.classList.add('show'); }
+function closeDrawer(){ side.classList.remove('open'); scrim.classList.remove('show'); }
+$('menuBtn').addEventListener('click',openDrawer);
+scrim.addEventListener('click',closeDrawer);
+
+// ============== MARKDOWN (safe) ==============
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function md(t){
+  let h=esc(t);
+  h=h.replace(/```([\s\S]*?)```/g,(_,c)=>'<pre><code>'+c.trim()+'</code></pre>');
+  h=h.replace(/`([^`]+)`/g,'<code>$1</code>');
+  h=h.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  const lines=h.split('\n'); let out=[], inList=false;
+  for(let ln of lines){
+    if(/^\s*[-•*]\s+/.test(ln)){ if(!inList){out.push('<ul>');inList=true;} out.push('<li>'+ln.replace(/^\s*[-•*]\s+/,'')+'</li>'); continue; }
+    if(inList){out.push('</ul>');inList=false;}
+    if(/^#{1,3}\s+/.test(ln)){ out.push('<h3>'+ln.replace(/^#{1,3}\s+/,'')+'</h3>'); continue; }
+    if(/^[A-Z0-9 ,\/&]{3,}:?\s*$/.test(ln.trim()) && ln.trim().length<46 && ln.trim().length>2){ out.push('<h4>'+ln.trim()+'</h4>'); continue; }
+    if(/^\s*---\s*$/.test(ln)){ out.push('<hr>'); continue; }
+    if(ln.trim()===''){ out.push(''); continue; }
+    out.push('<p>'+ln+'</p>');
+  }
+  if(inList) out.push('</ul>');
+  return out.join('\n');
+}
+
+function addMsg(role,text){
+  if(hero) hero.style.display='none';
+  const m=document.createElement('div'); m.className='msg';
+  const isC=role==='assistant';
+  m.innerHTML='<div class="av '+(isC?'c':'u')+'">'+(isC?'C':'B')+'</div><div class="bodyc"><div class="who">'+(isC?'CYPHER':'BAM')+'</div><div class="content"></div></div>';
+  wrap.appendChild(m);
+  const c=m.querySelector('.content');
+  c.innerHTML = isC ? (text?md(text):'<span class="cur"></span>') : esc(text);
+  stream.scrollTop=stream.scrollHeight;
+  return c;
+}
+
+// ============== API (direct browser call, streaming) ==============
+async function sendMsg(text){
+  text=(text||'').trim();
+  if(busy||!text) return;
+  if(!apiKey){ showGate(); return; }
+  busy=true; send.disabled=true;
+  addMsg('user',text); history.push({role:'user',content:text});
+  input.value=''; input.style.height='auto';
+  const cEl=addMsg('assistant',''); let acc='';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'content-type':'application/json',
+        'x-api-key':apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:model, max_tokens:4096, stream:true,
+        system:systemPrompt(),
+        messages:history
+      })
+    });
+    if(!res.ok){
+      let msg='Request failed ('+res.status+').';
+      try{ const j=await res.json(); if(j.error&&j.error.message) msg=j.error.message; }catch(e){}
+      if(res.status===401){ msg='Key rejected. Open ⚙︎ Settings and check your API key.'; }
+      cEl.innerHTML=md('⚠️ '+msg); history.pop(); busy=false; send.disabled=false; return;
+    }
+    const reader=res.body.getReader(); const dec=new TextDecoder(); let buf='';
+    while(true){
+      const {done,value}=await reader.read(); if(done) break;
+      buf+=dec.decode(value,{stream:true});
+      const parts=buf.split('\n'); buf=parts.pop();
+      for(const line of parts){
+        const s=line.trim(); if(!s.startsWith('data:')) continue;
+        const payload=s.slice(5).trim(); if(!payload||payload==='[DONE]') continue;
+        let d; try{ d=JSON.parse(payload); }catch(e){ continue; }
+        if(d.type==='content_block_delta' && d.delta && d.delta.type==='text_delta'){
+          acc+=d.delta.text; cEl.innerHTML=md(acc)+'<span class="cur"></span>'; stream.scrollTop=stream.scrollHeight;
+        } else if(d.type==='error'){
+          acc+=(acc?'\n\n':'')+'⚠️ '+(d.error&&d.error.message?d.error.message:'stream error');
+        }
+      }
+    }
+    cEl.innerHTML=md(acc);
+    history.push({role:'assistant',content:acc});
+  }catch(err){
+    cEl.innerHTML=md('⚠️ Network error: '+err.message+'\n\nIf this persists, check your connection or reopen the app from your home-screen icon.');
+    history.pop();
+  }finally{
+    busy=false; send.disabled=false; input.focus();
+  }
+}
+
+// ============== WIRING ==============
+send.addEventListener('click',()=>sendMsg(input.value));
+input.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(input.value); }});
+input.addEventListener('input',()=>{ input.style.height='auto'; input.style.height=Math.min(input.scrollHeight,180)+'px'; });
+document.querySelectorAll('[data-msg]').forEach(el=>el.addEventListener('click',()=>{ closeDrawer(); sendMsg(el.getAttribute('data-msg')); }));
+document.querySelectorAll('[data-fill]').forEach(el=>el.addEventListener('click',()=>{ input.value=el.getAttribute('data-fill'); input.focus(); input.style.height='auto'; input.style.height=Math.min(input.scrollHeight,180)+'px'; }));
+
+// boot
+reflectModel();
+if(!apiKey) showGate(); else input.focus();
+</script>
+</body>
+</html>
