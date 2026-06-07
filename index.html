@@ -7142,29 +7142,61 @@ async function saveTags(){
 async function loadTeamUsers(){
   const el=document.getElementById('team-users-list');if(!el)return;
   if(!supa||!supaUser){el.innerHTML='<div class="crud-empty">Sign in to manage team.</div>';return;}
+  el.innerHTML='<div style="font-size:11px;color:var(--mut);text-align:center;padding:12px">Loading…</div>';
   try{
     const{data,error}=await supa.from('users').select('id,email,role').order('role');
-    if(error||!data){el.innerHTML='<div class="crud-empty">Could not load team. Check RLS on users table.</div>';return;}
-    if(!data.length){el.innerHTML='<div class="crud-empty">No team members yet.</div>';return;}
-    // Also refresh currentUserRole from Supabase — bidirectional sync
+    if(error){
+      // Most likely cause: RLS policy missing. Show exact SQL to fix.
+      el.innerHTML=`<div style="background:#ff3b3b0d;border:1px solid #ff3b3b33;border-radius:12px;padding:14px;font-size:11px;color:var(--txt);line-height:1.6">
+        <div style="font-weight:700;color:var(--red);margin-bottom:8px">⚠️ Permission error — run this SQL in Supabase → SQL Editor:</div>
+        <code style="display:block;background:var(--surf2);border-radius:8px;padding:10px;font-size:10px;color:var(--or);white-space:pre-wrap;word-break:break-all;font-family:monospace">-- Allow owners to see all team members
+CREATE POLICY "Owners can view all users"
+  ON public.users FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid() AND role = 'owner'
+    )
+  );
+
+-- Allow owners to update roles
+CREATE POLICY "Owners can update roles"
+  ON public.users FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.users
+      WHERE id = auth.uid() AND role = 'owner'
+    )
+  );</code>
+        <div style="margin-top:8px;font-size:10px;color:var(--mut)">After running, refresh this panel. Error: ${error.message}</div>
+      </div>`;
+      return;
+    }
+    if(!data||!data.length){
+      el.innerHTML='<div class="crud-empty">No team members found. Make sure the users table has rows.</div>';
+      return;
+    }
+    // Refresh currentUserRole from Supabase — bidirectional sync
     const me=data.find(u=>String(u.id)===String(supaUser.id));
-    if(me&&me.role!==currentUserRole){
+    if(me&&me.role&&me.role!==currentUserRole){
       currentUserRole=me.role;
       renderForRole(me.role==='admin'?'admin':'owner');
       document.body.classList.toggle('role-admin',me.role==='admin');
     }
     el.innerHTML=data.map(u=>`
-      <div class="tagrow" style="align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;background:var(--surf2);border:1.5px solid var(--bdr2);border-radius:12px;padding:10px 12px">
+      <div style="display:flex;align-items:center;gap:8px;background:var(--surf2);border:1.5px solid var(--bdr2);border-radius:12px;padding:10px 12px;margin-bottom:8px;flex-wrap:wrap">
         <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.email}</div>
-          <div style="font-size:10px;color:var(--mut);margin-top:2px">${String(u.id)===String(supaUser.id)?'← you · ':''}</div>
+          <div style="font-size:12px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.email||'—'}</div>
+          ${String(u.id)===String(supaUser.id)?'<div style="font-size:9px;color:var(--or);margin-top:2px;font-weight:700">YOU</div>':''}
         </div>
-        <select class="te-select" id="role-sel-${u.id}" style="font-size:11px;padding:5px 8px;width:auto;flex-shrink:0" onchange="updateMemberRole('${u.id}',this.value)" ${String(u.id)===String(supaUser.id)?'disabled title="Cannot change your own role"':''}>
+        <select class="te-select" style="font-size:11px;padding:5px 8px;width:auto;flex-shrink:0" onchange="updateMemberRole('${u.id}',this.value)" ${String(u.id)===String(supaUser.id)?'disabled title="Cannot change your own role"':''}>
           <option value="owner" ${u.role==='owner'?'selected':''}>Owner</option>
           <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
         </select>
       </div>`).join('');
-  }catch(e){el.innerHTML=`<div class="crud-empty">Error: ${e.message}</div>`;}
+  }catch(e){
+    el.innerHTML=`<div class="crud-empty">Unexpected error: ${e.message}</div>`;
+  }
 }
 
 async function updateMemberRole(userId,newRole){
