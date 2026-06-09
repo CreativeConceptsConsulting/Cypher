@@ -119,16 +119,6 @@ if('serviceWorker' in navigator){
   --content-sm: 540px;
   --content-md: 760px;
   --content-lg: 1040px;
-
-  /* Elevation shadows */
-  --shadow-xs:  0 1px 3px rgba(0,0,0,0.28),0 1px 2px rgba(0,0,0,0.18);
-  --shadow-sm:  0 4px 12px rgba(0,0,0,0.36),0 2px 4px rgba(0,0,0,0.18);
-  --shadow-md:  0 8px 24px rgba(0,0,0,0.44),0 3px 8px rgba(0,0,0,0.22);
-  --shadow-lg:  0 16px 48px rgba(0,0,0,0.52),0 6px 16px rgba(0,0,0,0.26);
-  --shadow-brand: 0 4px 18px rgba(244,97,26,0.35),0 2px 6px rgba(244,97,26,0.20);
-
-  /* Brand gradient — used across CTA buttons */
-  --gradient-cta: linear-gradient(135deg,#f4611a,#c94400);
 }
 
 
@@ -677,6 +667,10 @@ button,a,[onclick]{-webkit-tap-highlight-color:transparent;touch-action:manipula
   padding:22px 16px 36px;width:100%;max-width:600px;max-height:85vh;overflow-y:auto;
 }
 .te-label{font-size:9.5px;color:var(--mut);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:7px;font-weight:700}
+.te-input{width:100%;background:var(--surf2);border:1px solid var(--bdr2);border-radius:12px;padding:11px 14px;font-size:14px;color:var(--txt);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:14px}
+.te-input:focus{border-color:#f4611a44}
+.te-select{width:100%;background:var(--surf2);border:1px solid var(--bdr2);border-radius:12px;padding:11px 14px;font-size:14px;color:var(--txt);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:14px;-webkit-appearance:none;appearance:none}
+.te-select:focus{border-color:var(--or)}
 .te-row{display:flex;gap:8px;margin-bottom:14px}
 .te-half{flex:1}
 /* ── BUTTONS — WCAG AA, touch targets, color-blind safe ─────────────────── */
@@ -705,15 +699,13 @@ button,a,[onclick]{-webkit-tap-highlight-color:transparent;touch-action:manipula
 .te-save:hover{opacity:0.92;box-shadow:0 4px 18px #f4611a44}
 .te-save:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .te-save:disabled{opacity:0.45;cursor:not-allowed;box-shadow:none}
-/* Input fields — unified, no duplicates */
+/* Input fields */
 .te-input{
   width:100%;background:var(--surf2);
   border:1.5px solid var(--bdr2);border-radius:11px;
   padding:11px 13px;font-size:13px;color:var(--txt);
   font-family:'DM Sans',sans-serif;box-sizing:border-box;
-  margin-bottom:12px;
   transition:border-color var(--dur-fast);
-  -webkit-appearance:none;appearance:none;
 }
 .te-input:focus{outline:none;border-color:var(--or);box-shadow:0 0 0 3px var(--focus)}
 .te-input::placeholder{color:var(--mut)}
@@ -722,9 +714,7 @@ button,a,[onclick]{-webkit-tap-highlight-color:transparent;touch-action:manipula
   border:1.5px solid var(--bdr2);border-radius:11px;
   padding:10px 13px;font-size:13px;color:var(--txt);
   font-family:'DM Sans',sans-serif;cursor:pointer;
-  box-sizing:border-box;margin-bottom:12px;
   transition:border-color var(--dur-fast);
-  -webkit-appearance:none;appearance:none;
 }
 .te-select:focus{outline:none;border-color:var(--or);box-shadow:0 0 0 3px var(--focus)}
 
@@ -1313,20 +1303,10 @@ button,a,[onclick]{-webkit-tap-highlight-color:transparent;touch-action:manipula
 #inbox{z-index:310}
 #role-banner{
   display:none;
-  padding:7px 16px;font-size:11px;font-weight:600;text-align:center;
-  flex-shrink:0;
-}
-#role-banner.mode-preview{
-  background:linear-gradient(135deg,rgba(59,130,246,0.10),rgba(59,130,246,0.05));
+  background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(59,130,246,0.05));
   border-bottom:1px solid rgba(59,130,246,0.14);
-  color:var(--bl2);
+  padding:7px 16px;font-size:11px;color:var(--bl2);font-weight:600;text-align:center;
 }
-#role-banner.mode-admin{
-  background:linear-gradient(135deg,rgba(90,125,255,0.08),rgba(26,63,255,0.04));
-  border-bottom:1px solid rgba(90,125,255,0.12);
-  color:var(--bl2);
-}
-/* View banner inside tab content (task updates, calendar suggestions) */
 .tk-status-btn{
   background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.26);
   color:var(--pur);border-radius:9px;padding:6px 12px;font-size:11px;font-weight:700;
@@ -2156,10 +2136,7 @@ body.role-admin .owner-only-filter{display:none!important}
     <!-- Team tab — owner only -->
     <div class="stm-panel" id="stm-team" style="display:none">
       <div class="st-section" style="margin-top:0">Team Members</div>
-      <div style="font-size:11px;color:var(--mut);line-height:1.6;margin-bottom:12px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:11px;padding:10px 12px">
-        <strong style="color:var(--txt)">Owner</strong> — full access to all tabs, data, and settings.<br>
-        <strong style="color:var(--txt)">Admin</strong> — sees tasks assigned to them, can suggest calendar events, and has their own chat history.
-      </div>
+      <div style="font-size:10px;color:var(--mut);margin-bottom:10px">Manage CYPHER logins and roles. <strong style="color:var(--txt)">Owner</strong> = full access. <strong style="color:var(--txt)">Admin</strong> = assigned tasks + calendar suggestions only.</div>
       <div id="team-users-list"><div style="font-size:11px;color:var(--mut);text-align:center;padding:12px">Loading…</div></div>
       <button class="tagadd" style="margin-top:10px" onclick="openAddTeamMember()">+ Invite / Create Account</button>
 
@@ -2182,13 +2159,13 @@ body.role-admin .owner-only-filter{display:none!important}
     <!-- Workspace tab -->
     <div class="stm-panel" id="stm-workspace" style="display:none">
       <div class="st-section" style="margin-top:0">Initiative Tags</div>
-      <div style="font-size:11px;color:var(--mut);margin-bottom:10px;line-height:1.55">Tags attached to tasks and captured thoughts — used for filtering, CYPHER's context, and initiative tracking.</div>
+      <div style="font-size:10px;color:var(--mut);margin-bottom:8px">Tags applied to tasks and captured thoughts — used for filtering and CYPHER's initiative tracking.</div>
       <div id="tagList"></div>
       <button class="tagadd" onclick="addTag()">+ Add Initiative Tag</button>
       <button class="settings-save-btn" onclick="saveTags()" id="save-tags-btn">Save Tag Changes</button>
 
       <div class="st-section">Task Owners</div>
-      <div style="font-size:11px;color:var(--mut);margin-bottom:10px;line-height:1.55">Who tasks can be assigned to — includes both team members and CYPHER. This list controls the owner dropdown in task creation. To manage <em>login access</em>, use the Team tab.</div>
+      <div style="font-size:10px;color:var(--mut);margin-bottom:8px">People tasks can be assigned to. Add their login email to enable per-admin task filtering.</div>
       <div id="ownerList"></div>
       <button class="tagadd" onclick="addOwner()">+ Add Owner</button>
       <button class="settings-save-btn" onclick="saveOwners()" id="save-owners-btn">Save Owner Changes</button>
@@ -2825,9 +2802,9 @@ body.role-admin .owner-only-filter{display:none!important}
           </select>
         </div>
 
-        <!-- Add task — text updated by renderForRole() for admin -->
-        <button onclick="openAddTask()" class="task-add-btn" id="task-add-btn">
-          <span>+</span><span id="task-add-btn-label">Add task · or tap 🎤 to dictate</span>
+        <!-- Add task -->
+        <button onclick="openAddTask()" class="task-add-btn">
+          <span>+</span><span>Add task · or tap 🎤 to dictate</span>
         </button>
 
         <!-- Task list — OUTSIDE bulk-bar, always visible -->
@@ -2843,13 +2820,13 @@ body.role-admin .owner-only-filter{display:none!important}
           <div id="dlist"></div>
         </div>
 
-        <!-- Empty state — content injected by renderTasks() based on role -->
+        <!-- Empty state -->
         <div id="emst" style="display:none;text-align:center;padding:40px 24px">
-          <div id="emst-icon" style="font-size:52px;margin-bottom:16px">🔥</div>
-          <div id="emst-title" style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--or);margin-bottom:8px">All clear.</div>
-          <div id="emst-body" style="font-size:13px;color:var(--mut);margin-bottom:24px;line-height:1.6;max-width:260px;margin-inline:auto">CYPHER pulls tasks from every meeting and conversation automatically. Or add one manually.</div>
-          <button onclick="openAddTask()" style="background:linear-gradient(135deg,var(--or),#c94400);border:none;border-radius:var(--radius-full);padding:12px 28px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'DM Sans','Segoe UI',system-ui,sans-serif;display:inline-flex;align-items:center;gap:8px;margin-bottom:20px" id="emst-cta">+ Add First Task</button>
-          <div id="emst-hint" style="font-size:11px;color:var(--mut2);line-height:1.6">Or tell CYPHER in Chat:<br><em style="color:var(--mut)">"Add a task: finalize Series A deck by Friday"</em></div>
+          <div style="font-size:52px;margin-bottom:16px">🔥</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--or);margin-bottom:8px">All clear.</div>
+          <div style="font-size:13px;color:var(--mut);margin-bottom:24px;line-height:1.6;max-width:260px;margin-inline:auto">CYPHER pulls tasks from every meeting and conversation automatically. Or add one manually.</div>
+          <button onclick="openAddTask()" style="background:linear-gradient(135deg,var(--or),#c94400);border:none;border-radius:var(--radius-full);padding:12px 28px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'DM Sans','Segoe UI',system-ui,sans-serif;display:inline-flex;align-items:center;gap:8px;margin-bottom:20px">+ Add First Task</button>
+          <div style="font-size:11px;color:var(--mut2);line-height:1.6">Or tell CYPHER in Chat:<br><em style="color:var(--mut)">"Add a task: finalize Series A deck by Friday"</em></div>
         </div>
 
         <!-- SWIPE GESTURE HINT — shown once, then hidden forever -->
@@ -2887,21 +2864,21 @@ body.role-admin .owner-only-filter{display:none!important}
         <!-- ADMIN view -->
         <div id="cal-admin-view" style="display:none">
           <div id="cal-admin-banner" style="display:none"></div>
-          <div class="vt">Calendar</div>
-          <div class="vs">View Bam's schedule and propose changes for his approval</div>
+          <div class="vt">Suggest to Bam</div>
+          <div class="vs">Propose a calendar change for Bam's review and approval</div>
 
           <!-- Bam's schedule context — helps admin make informed suggestions -->
           <div class="sec" style="margin-top:14px;display:flex;align-items:center;justify-content:space-between">
             <span>📅 Bam's Schedule Today</span>
-            <button onclick="loadOwnerCalForAdmin()" style="background:none;border:none;color:var(--or);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:4px 8px;border-radius:8px;transition:all var(--dur-fast)" title="Refresh Bam's calendar">↻ Refresh</button>
+            <button onclick="loadOwnerCalForAdmin()" style="background:none;border:none;color:var(--or);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif">↻ Refresh</button>
           </div>
           <div id="admin-owner-cal" style="background:var(--surf2);border:1px solid var(--bdr2);border-radius:14px;padding:12px;margin-bottom:16px;min-height:60px">
             <div style="font-size:11px;color:var(--mut);text-align:center;padding:10px 0">Loading Bam's calendar…</div>
           </div>
 
           <!-- Suggest form -->
-          <div class="sec">📝 Suggest a Change</div>
-          <div style="background:var(--surf2);border:1.5px solid var(--bdr2);border-radius:16px;padding:16px;margin-bottom:16px">
+          <div class="sec">📝 New Suggestion</div>
+          <div style="background:var(--surf2);border:1px solid var(--bdr2);border-radius:16px;padding:16px;margin-bottom:16px">
             <div class="te-label">What to schedule or change</div>
             <input class="te-input" id="sug-title" placeholder="e.g., Move BeltLine call to Thursday 2 PM" style="margin-bottom:10px"/>
             <div class="sug-dates-row">
@@ -2909,14 +2886,12 @@ body.role-admin .owner-only-filter{display:none!important}
               <div><div class="te-label">Proposed end</div><input class="te-input" id="sug-end" type="datetime-local"/></div>
             </div>
             <div class="te-label">Notes for Bam</div>
-            <textarea class="te-input" id="sug-notes" rows="3" placeholder="Reason, context, or anything Bam should know before approving…" style="resize:vertical;margin-bottom:0"></textarea>
-            <button class="mc-btn btn-or" style="width:100%;padding:13px;font-size:13px;font-weight:700;border-radius:12px;margin-top:12px" onclick="submitSuggestion()">📅 Send to Bam for Approval</button>
+            <textarea class="te-input" id="sug-notes" rows="3" placeholder="Context, reason for the change, anything Bam should know…" style="resize:vertical"></textarea>
+            <button class="mc-btn btn-or" style="width:100%;margin-top:12px" onclick="submitSuggestion()">📅 Send to Bam for Approval</button>
           </div>
 
           <div class="sec">📤 Your Suggestions</div>
-          <div id="admin-suggestions-list">
-            <div class="crud-empty">No suggestions yet. Use the form above to propose a calendar change.</div>
-          </div>
+          <div id="admin-suggestions-list"></div>
         </div>
 
 
@@ -3221,43 +3196,20 @@ function renderForRole(role){
     goByName(firstVisible);
   }
 
-  // Role banner — owner previewing admin vs. a real admin logged in
+  // Role banner
   const banner=document.getElementById('role-banner');
   if(banner){
-    if(role==='owner'){
-      banner.style.display='none';
-      banner.className='';
-      banner.textContent='';
-    } else if(role==='admin'){
-      banner.style.display='block';
-      const isPreview=(currentUserRole==='owner');
-      if(isPreview){
-        banner.className='mode-preview';
-        banner.textContent='👁 Previewing Admin View — this is what your admin sees';
-      } else {
-        banner.className='mode-admin';
-        banner.textContent='📋 Admin Mode — showing tasks assigned to you';
-      }
-    } else {
-      banner.style.display='block';
-      banner.className='mode-preview';
-      banner.textContent='👁️ Previewing Viewer View — read-only access';
-    }
+    if(role==='owner'){banner.style.display='none';banner.textContent='';}
+    else if(role==='admin'){banner.style.display='block';banner.textContent='📋 Previewing Admin View — this is what your admin sees';}
+    else{banner.style.display='block';banner.textContent='👁️ Previewing Viewer View — read-only access';}
   }
 
-  // Update header sub — use display_name when available
+  // Update header sub
   const sub=document.getElementById('hdr-sub');
   if(sub){
-    const ownerName=supaUser?.user_metadata?.display_name||'Bam Sparks';
-    if(role==='owner')sub.textContent=`${ownerName} · Command Center`;
-    else if(role==='admin'){
-      const adminName=currentUserRole==='admin'
-        ?(supaUser?.user_metadata?.display_name||supaUser?.email?.split('@')[0]||'Admin')
-        :'Admin';
-      sub.textContent=currentUserRole==='owner'?'Admin Preview · CYPHER':`${adminName} · Admin Mode`;
-    } else {
-      sub.textContent='Viewer · CYPHER';
-    }
+    if(role==='owner')sub.textContent='Bam Sparks · Command Center';
+    else if(role==='admin')sub.textContent='Admin View · CYPHER';
+    else sub.textContent='Viewer · CYPHER';
   }
 
   // Calendar sub-view switch
@@ -3266,47 +3218,6 @@ function renderForRole(role){
   const showAdminCal=role==='admin';
   if(calOwner)calOwner.style.display=showAdminCal?'none':'';
   if(calAdmin)calAdmin.style.display=showAdminCal?'':'none';
-
-  // Update task add-button label for admin context
-  const taskAddLabel=document.getElementById('task-add-btn-label');
-  if(taskAddLabel){
-    taskAddLabel.textContent=role==='admin'
-      ?'Add a task for yourself · or tap 🎤 to dictate'
-      :'Add task · or tap 🎤 to dictate';
-  }
-
-  // Update chat welcome for admin — only if the welcome card is still visible
-  const welcomeCard=document.getElementById('chat-welcome');
-  if(welcomeCard){
-    const bblContent=welcomeCard.querySelector('.bbl-content');
-    const chips=welcomeCard.querySelector('.chips');
-    if(role==='admin'){
-      if(bblContent)bblContent.innerHTML=`I'm <strong>CYPHER Admin Mode</strong> — your AI assistant for coordinating with Bam.<br><br>
-        I can help you:<br>
-        📋 <strong>Manage Tasks</strong> — view and update tasks assigned to you<br>
-        📅 <strong>Suggest Calendar Events</strong> — propose meetings for Bam's approval<br>
-        📝 <strong>Process Meetings</strong> — turn notes and transcripts into structured briefs<br>
-        💡 <strong>Capture Thoughts</strong> — tag ideas to Bam's initiatives<br><br>
-        What do you need to coordinate today?`;
-      if(chips)chips.innerHTML=`
-        <button class="chip" onclick="document.getElementById('chat-welcome').remove();goByName('tasks')">📋 View My Tasks</button>
-        <button class="chip" onclick="document.getElementById('chat-welcome').remove();goByName('cal')">📅 Suggest a Meeting</button>
-        <button class="chip" onclick="document.getElementById('chat-welcome').remove();openPM('notes')">🔍 Process Meeting Notes</button>`;
-    } else if(role==='owner'){
-      if(bblContent)bblContent.innerHTML=`I'm <strong>CYPHER</strong>, Bam — your command center. No beginning, no end; the work just keeps moving.<br><br>
-        I run four modes at once:<br>
-        ⚡ <strong>Executor</strong> — drafts and sends, creates events, briefs your admin<br>
-        📋 <strong>Admin Coordinator</strong> — turns work into structured briefs<br>
-        💡 <strong>Thought Partner</strong> — captures ideas across your initiatives<br>
-        🎯 <strong>Strategic Advisor</strong> — briefs you before meetings, debriefs after<br><br>
-        What should we move first?`;
-      if(chips)chips.innerHTML=`
-        <button class="chip" onclick="document.getElementById('chat-welcome').remove();goByName('intel')">📥 Upload Transcript</button>
-        <button class="chip" onclick="document.getElementById('chat-welcome').remove();openPM('notes')">🔍 Process a Meeting</button>
-        <button class="chip" onclick="document.getElementById('chat-welcome').remove();openPM('thought')">💡 Capture a Thought</button>
-        <button class="chip" onclick="document.getElementById('chat-welcome').remove();ask(PROMPTS.adminbrief)">📋 Brief My Admin</button>`;
-    }
-  }
 
   // Re-render tasks for the new role (debounced to prevent blinking)
   renderTasksDebounced(false);
@@ -4946,9 +4857,9 @@ function renderTasks(animateAsNew=false){
         <div class="tk-quick-row">
           <button class="tk-qbtn btn-execute" onclick="executeTask('${t.id}')">⚡ Execute</button>
           <button class="tk-qbtn btn-edit" onclick="openEditTask('${t.id}')">✏️ Edit</button>
-          ${isRealAdmin||viewMode==='admin'
-            ?`<button class="tk-qbtn btn-delegate" onclick="delegateTask('${t.id}')">👤 Move to Bam</button>`
-            :`<button class="tk-qbtn btn-delegate" onclick="delegateTask('${t.id}')">📋 Assign to Admin</button>`}
+          ${viewMode==='admin'
+            ?`<button class="tk-qbtn btn-delegate" onclick="delegateTask('${t.id}')">👤 Delegate to Bam</button>`
+            :`<button class="tk-qbtn btn-delegate" onclick="delegateTask('${t.id}')">📋 Delegate to Admin</button>`}
           <button class="tk-qbtn btn-done" onclick="completeTask('${t.id}')">✅ Mark Done</button>
           <button class="tk-qbtn" style="background:rgba(255,59,59,0.08);border:1px solid rgba(255,59,59,0.20);color:var(--red)" onclick="deleteTask('${t.id}')">🗑️ Delete</button>
         </div>
@@ -5049,32 +4960,8 @@ function renderTasks(animateAsNew=false){
   // Always show list when TDATA has tasks — never hide it based on filter alone
   list.style.display='block';
   const es=document.getElementById('emst');
-  const isEmpty=filtered.length===0&&doneTasks.filter(t=>isRealAdmin?(t.owner==='Admin'||t.admin):true).length===0;
-  if(es){
-    es.style.display=isEmpty?'block':'none';
-    if(isEmpty){
-      // Role-appropriate empty state messaging
-      const icon=document.getElementById('emst-icon');
-      const title=document.getElementById('emst-title');
-      const body=document.getElementById('emst-body');
-      const cta=document.getElementById('emst-cta');
-      const hint=document.getElementById('emst-hint');
-      if(isRealAdmin){
-        if(icon)icon.textContent='📋';
-        if(title)title.textContent='No tasks assigned.';
-        if(body)body.textContent='Tasks assigned to you will appear here. Ask Bam to assign something or add your own.';
-        if(cta)cta.textContent='+ Add Task';
-        if(hint)hint.textContent='';
-      } else {
-        if(icon)icon.textContent='🔥';
-        if(title)title.textContent='All clear.';
-        if(body)body.textContent='CYPHER pulls tasks from every meeting and conversation automatically. Or add one manually.';
-        if(cta)cta.textContent='+ Add First Task';
-        if(hint)hint.innerHTML='Or tell CYPHER in Chat:<br><em style="color:var(--mut)">"Add a task: finalize Series A deck by Friday"</em>';
-      }
-    }
-  }
-  if(TDATA.length>0&&filtered.length===0&&!isEmpty){
+  if(es)es.style.display=TDATA.length===0?'block':'none';
+  if(TDATA.length>0&&filtered.length===0){
     list.innerHTML=`<div class="crud-empty" style="margin-top:4px">No tasks match this filter.</div>`;
   }
 
@@ -5171,9 +5058,7 @@ function openAddTask(){
   editingTaskId=null;
   renderOwnerSelect();renderTagSelect();
   document.getElementById('te-text').value='';
-  // Admin defaults to "Admin" so their tasks self-assign; owner defaults to first owner
-  const defaultOwner=currentUserRole==='admin'?'Admin':(OWNERS[0]?OWNERS[0].name:'Bam');
-  document.getElementById('te-owner').value=defaultOwner;
+  document.getElementById('te-owner').value=OWNERS[0]?OWNERS[0].name:'';
   document.getElementById('te-priority').value='medium';
   document.getElementById('te-due').value='';
   document.getElementById('te-initiative').value=TAGS[0]?TAGS[0].id:'';
@@ -5994,7 +5879,7 @@ function go(id,btn){
     const calAdmin=document.getElementById('cal-admin-view');
     if(calOwner)calOwner.style.display=showAdminCal?'none':'';
     if(calAdmin)calAdmin.style.display=showAdminCal?'':'none';
-    if(showAdminCal){loadAdminCalBanner();loadOwnerCalForAdmin();loadAdminSuggestions();}
+    if(showAdminCal){loadAdminCalBanner();loadOwnerCalForAdmin();}
     else{loadCalBanner();loadCalendarEvents();}
   }
   if(id==='chat')setTimeout(restoreDraft,80);
@@ -6593,10 +6478,7 @@ async function saveTask({text,notes,priority,owner,initiative,source}){
   renderTasks();
   updateTasksBadge();
   if(supa&&supaUser){
-    try{
-      const taskOwnerId=(currentUserRole==='admin'&&_ownerUserId)?_ownerUserId:supaUser.id;
-      await supa.from('tasks').insert({user_id:taskOwnerId,...task});
-    }catch(e){}
+    try{await supa.from('tasks').insert({user_id:supaUser.id,...task});}catch(e){}
   }
   return task;
 }
@@ -8798,22 +8680,16 @@ function updateAuthUI(){
   if(supaUser){
     const roleLabel={owner:'Owner',admin:'Admin'}[currentUserRole]||'Member';
     el.innerHTML=`
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div style="width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--or),var(--bl));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0">${(supaUser.email||'?')[0].toUpperCase()}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--grn);flex-shrink:0"></div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="stm-display-name-label">${escHtml(supaUser.user_metadata?.display_name||supaUser.email?.split('@')[0]||'')}</div>
+          <div style="font-size:12px;font-weight:700;color:var(--grn)">Synced</div>
           <div style="font-size:10px;color:var(--mut);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(supaUser.email||'')}</div>
         </div>
         <span class="role-badge ${currentUserRole}">${roleLabel}</span>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
-        <input class="te-input" id="stm-display-name-input" type="text" placeholder="Display name"
-          value="${escHtml(supaUser.user_metadata?.display_name||supaUser.email?.split('@')[0]||'')}"
-          style="flex:1;margin-bottom:0;font-size:12px"/>
-        <button onclick="window._cyUpdateDisplayName()" class="te-save" style="flex:0 0 auto;padding:10px 14px;font-size:12px;min-height:40px">Save</button>
-      </div>
       ${currentUserRole==='owner'?`<div style="font-size:10px;color:var(--mut);line-height:1.5;margin-bottom:10px">Use the view toggle in the top bar to preview what your admin team members see.</div>`:''}
-      <button onclick="window._cySignOut()" class="te-cancel" style="width:100%;margin-bottom:8px">Sign Out</button>
+      <button onclick="window._cySignOut()" class="te-cancel" style="width:100%;margin-bottom:10px">Sign Out</button>
       <button onclick="window._cyForgotPassword()" class="te-save" style="width:100%;background:var(--surf2);border:1px solid var(--bdr2);color:var(--txt);font-size:12px;margin-bottom:10px">🔑 Reset / Change Password</button>
       <button id="pwa-install-btn" onclick="window._installApp()">
         <span style="font-size:20px">📲</span>
@@ -8853,22 +8729,6 @@ function updateAuthUI(){
 // window._cy* pattern: the only reliable approach for event handlers on
 // dynamically injected innerHTML. addEventListener races with onAuthStateChange
 // replacing the DOM. window.* functions survive any innerHTML replacement.
-
-window._cyUpdateDisplayName=async function(){
-  const input=document.getElementById('stm-display-name-input');
-  const name=(input?.value||'').trim();
-  if(!name||!supa){return;}
-  try{
-    const{error}=await supa.auth.updateUser({data:{display_name:name}});
-    if(error){showToast('⚠️ '+error.message);return;}
-    // Also persist in public.users for cross-user visibility
-    await supa.from('users').update({display_name:name}).eq('id',supaUser.id);
-    // Update the label inline
-    const label=document.getElementById('stm-display-name-label');
-    if(label)label.textContent=name;
-    showToast('✓ Display name updated');
-  }catch(e){showToast('⚠️ '+e.message);}
-};
 
 window._cySetNewPassword=async function(){
   const pass=document.getElementById('new-pass')?.value;
@@ -9615,7 +9475,7 @@ async function loadTeamUsers(){
   if(!supa||!supaUser){el.innerHTML='<div class="crud-empty">Sign in to manage team.</div>';return;}
   el.innerHTML='<div style="font-size:11px;color:var(--mut);text-align:center;padding:12px">Loading…</div>';
   try{
-    const{data,error}=await supa.from('users').select('id,email,role,display_name').order('role');
+    const{data,error}=await supa.from('users').select('id,email,role').order('role');
     if(error){
       // Most likely cause: RLS policy missing. Show exact SQL to fix.
       el.innerHTML=`<div style="background:rgba(255,59,59,0.05);border:1px solid rgba(255,59,59,0.20);border-radius:12px;padding:14px;font-size:11px;color:var(--txt);line-height:1.6">
@@ -9657,24 +9517,17 @@ CREATE POLICY "Owners can update roles"
       renderForRole(me.role==='admin'?'admin':'owner');
       document.body.classList.toggle('role-admin',me.role==='admin');
     }
-    el.innerHTML=data.map(u=>{
-      const displayName=escHtml(u.display_name||u.email?.split('@')[0]||'—');
-      const isMe=String(u.id)===String(supaUser.id);
-      const initial=(u.email||'?')[0].toUpperCase();
-      const roleColor=u.role==='owner'?'var(--or)':'var(--bl2)';
-      return `
-      <div style="display:flex;align-items:center;gap:10px;background:var(--surf2);border:1.5px solid var(--bdr2);border-radius:13px;padding:10px 12px;margin-bottom:8px">
-        <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,${u.role==='owner'?'var(--or),#c94400':'var(--bl),var(--bl2)'});display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0">${initial}</div>
+    el.innerHTML=data.map(u=>`
+      <div style="display:flex;align-items:center;gap:8px;background:var(--surf2);border:1.5px solid var(--bdr2);border-radius:12px;padding:10px 12px;margin-bottom:8px;flex-wrap:wrap">
         <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:700;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${displayName}${isMe?' <span style="font-size:9px;color:var(--or);font-weight:700">(you)</span>':''}</div>
-          <div style="font-size:10px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(u.email||'')}</div>
+          <div style="font-size:12px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(u.email||'—')}</div>
+          ${String(u.id)===String(supaUser.id)?'<div style="font-size:9px;color:var(--or);margin-top:2px;font-weight:700">YOU</div>':''}
         </div>
-        <select class="te-select" style="font-size:11px;padding:5px 8px;width:auto;flex-shrink:0;margin-bottom:0" onchange="updateMemberRole('${u.id}',this.value)" ${isMe?'disabled title="Cannot change your own role"':''}>
+        <select class="te-select" style="font-size:11px;padding:5px 8px;width:auto;flex-shrink:0" onchange="updateMemberRole('${u.id}',this.value)" ${String(u.id)===String(supaUser.id)?'disabled title="Cannot change your own role"':''}>
           <option value="owner" ${u.role==='owner'?'selected':''}>Owner</option>
           <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
         </select>
-      </div>`;
-    }).join('');
+      </div>`).join('');
   }catch(e){
     el.innerHTML=`<div class="crud-empty">Unexpected error: ${escHtml(e.message)}</div>`;
   }
@@ -9785,11 +9638,7 @@ async function dbSaveMessage(role,content,model){
 async function dbSaveTask(t){
   if(!supa||!supaUser)return;
   try{
-    // Admin tasks must be stored under the owner's user_id so they appear in
-    // the owner's namespace — which is where syncDown (admin) fetches from.
-    // RLS "Admins can update owner tasks" allows this write via SECURITY DEFINER.
-    const taskUserId=(currentUserRole==='admin'&&_ownerUserId)?_ownerUserId:supaUser.id;
-    const row={user_id:taskUserId,text:t.tx,owner:t.owner,priority:t.priority,
+    const row={user_id:supaUser.id,text:t.tx,owner:t.owner,priority:t.priority,
       due_at:t.du||null,initiative:t.initiative||null,source:t.sr||null,
       notes:t.notes||null,completed:false,status:t.status||'pending'};
     const isUUID=/^[0-9a-f-]{36}$/.test(String(t.id));
@@ -9820,9 +9669,8 @@ async function dbCompleteTask(id){
     // Local-only task (numeric ID) — save it to Supabase as completed
     // then update the local ID to the new Supabase UUID
     try{
-      const _complTaskUserId=(currentUserRole==='admin'&&_ownerUserId)?_ownerUserId:supaUser.id;
       const {data,error}=await supa.from('tasks').insert({
-        user_id:_complTaskUserId,text:t.tx||t.text,owner:t.owner||'Bam',
+        user_id:supaUser.id,text:t.tx||t.text,owner:t.owner||'Bam',
         priority:t.priority||'medium',due_at:t.du||null,
         initiative:t.initiative||null,notes:t.notes||null,
         completed:true,completed_at:t.completed_at||new Date().toISOString(),
