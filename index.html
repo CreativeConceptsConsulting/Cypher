@@ -14,14 +14,14 @@
 <meta name="theme-color" content="#080b14"/>
 <link rel="manifest" href="./manifest.json"/>
 <!-- Cache busting -->
-<meta name="cypher-version" content="5.9.2"/>
+<meta name="cypher-version" content="5.8.2"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
 <!-- Force SW bypass on initial load — appends ?v= to prevent browser returning stale HTML -->
 <script>
 (function(){
-  var v='5.9.2';
+  var v='5.8.2';
   // Unregister ALL old service workers so stale SWs cannot intercept requests in normal mode
   if('serviceWorker' in navigator){
     navigator.serviceWorker.getRegistrations().then(function(registrations){
@@ -127,7 +127,7 @@ window._installApp=async function(){
 if('serviceWorker' in navigator){
   // Use relative path — critical for GitHub Pages repos at /repo-name/ subpaths.
   // Cache-bust the SW URL so the browser never serves a stale sw.js from HTTP cache.
-  var swUrl='./sw.js?v=5.9.2';
+  var swUrl='./sw.js?v=5.8.2';
   navigator.serviceWorker.register(swUrl,{scope:'./',updateViaCache:'none'}).then(reg=>{
     // Force an immediate update check — bypasses HTTP cache for sw.js itself
     reg.update();
@@ -139,8 +139,8 @@ if('serviceWorker' in navigator){
           // Only attach the controllerchange listener here, inside updatefound,
           // so it only fires when a genuine update is installed — not on every page load.
           navigator.serviceWorker.addEventListener('controllerchange',()=>{
-            if(!sessionStorage.getItem('sw-reloaded-5.9.2')){
-              sessionStorage.setItem('sw-reloaded-5.9.2','1');
+            if(!sessionStorage.getItem('sw-reloaded-5.8.2')){
+              sessionStorage.setItem('sw-reloaded-5.8.2','1');
               location.reload(true);
             }
           },{once:true});
@@ -157,7 +157,7 @@ if('serviceWorker' in navigator){
     }).catch(()=>{});
   }).catch(e=>console.warn('SW registration failed:',e));
   // Clear the reload guard after 8s so future updates can reload normally
-  setTimeout(()=>sessionStorage.removeItem('sw-reloaded-5.9.2'),8000);
+  setTimeout(()=>sessionStorage.removeItem('sw-reloaded-5.8.2'),8000);
 }
 </script>
 <style>
