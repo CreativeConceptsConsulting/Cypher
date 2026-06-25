@@ -1,0 +1,45 @@
+{
+  "name": "CYPHER",
+  "short_name": "CYPHER",
+  "description": "AI Command Center — powered by CYPHER",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080b14",
+  "theme_color": "#080b14",
+  "categories": ["productivity", "business"],
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Chat",
+      "short_name": "Chat",
+      "url": "./index.html?tab=chat",
+      "description": "Start a new conversation with CYPHER",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Tasks",
+      "short_name": "Tasks",
+      "url": "./index.html?tab=tasks",
+      "description": "View and manage your workspace tasks",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Calendar",
+      "short_name": "Calendar",
+      "url": "./index.html?tab=cal",
+      "description": "Your schedule and calendar events",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Intel",
+      "short_name": "Intel",
+      "url": "./index.html?tab=intel",
+      "description": "Upload and process meeting intelligence",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
